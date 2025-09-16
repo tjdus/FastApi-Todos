@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+# 가상환경
+venv/
+env/
+.venv/
+.env/
+
+# pip 환경 파일
+pip-log.txt
+pip-delete-this-directory.txt
+
+# IDE
+.idea/
+.vscode/
+
+# OS 파일
+.DS_Store
+
+# 로그 및 임시 파일
+*.log
+*.tmp
+
+# 테스트 결과
+htmlcov/
+.coverage
+.tox/
+.pytest_cache/
+
+# 환경 변수 파일
+.env
+.env.*
+
+# 빌드
+build/
+dist/
+*.egg-info/
