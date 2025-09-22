@@ -33,7 +33,9 @@ def save_todos(todos):
 # To-Do 목록 조회
 @app.get("/todos", response_model=list[TodoItem])
 def get_todos():
-    return load_todos()
+    todos = load_todos()
+    todos.sort(key=lambda x: x["created_at"], reverse=True)
+    return todos
 
 # 신규 To-Do 항목 추가
 @app.post("/todos", response_model=TodoItem)
