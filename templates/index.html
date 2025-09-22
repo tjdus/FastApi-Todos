@@ -239,13 +239,24 @@
             align-items: flex-start;
             gap: 8px;
         }
+        .add-fab {
+            width: 56px;
+            height: 56px;
+            background: transparent;
+        }
     </style>
 </head>
 <body>
     <h1>할 일 목록</h1>
     <ul id="todo-list"></ul>
     <form id="todo-form">
-        <button type="button" id="open-add-modal">추가하기</button>
+        <button type="button" id="open-add-modal" class="add-fab" aria-label="할 일 추가">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="12" fill="#4caf50"/>
+                <line x1="12" y1="7" x2="12" y2="17" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+                <line x1="7" y1="12" x2="17" y2="12" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+            </svg>
+        </button>
     </form>
 
     <div id="add-modal" class="modal">
