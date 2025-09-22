@@ -97,22 +97,29 @@
             color: #333;
             text-align: center;
         }
-        .modal-content label {
-            margin-top: 0;
-            margin-bottom: 8px;
+        #edit-form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        #edit-form label {
+            display: flex;
+            flex-direction: column;
             font-size: 14px;
             color: #444;
+            margin-bottom: 0;
         }
-        .modal-content input[type="text"] {
+        #edit-form input[type="text"] {
             width: 100%;
             padding: 8px;
             margin-top: 4px;
             border-radius: 5px;
             border: 1px solid #bbb;
             font-size: 15px;
+            box-sizing: border-box;
         }
-        .modal-content .modal-actions {
-            margin-top: 18px;
+        .modal-actions {
+            margin-top: 10px;
             display: flex;
             justify-content: flex-end;
             gap: 8px;
