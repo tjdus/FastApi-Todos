@@ -4,6 +4,57 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>할 일 목록</title>
+    <style>
+        button {
+            margin-left: 8px;
+            padding: 4px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .edit-btn {
+            background: #4caf50;
+            color: #fff;
+        }
+        .delete-btn {
+            background: #f44336;
+            color: #fff;
+        }
+        /* 모달 스타일 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0; top: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background: #fff;
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 300px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        .modal-content label {
+            display: block;
+            margin-top: 10px;
+        }
+        .modal-content input[type="text"] {
+            width: 100%;
+            padding: 6px;
+            margin-top: 4px;
+            box-sizing: border-box;
+        }
+        .modal-content input[type="checkbox"] {
+            margin-left: 4px;
+        }
+        .modal-content .modal-actions {
+            margin-top: 16px;
+            text-align: right;
+        }
+    </style>
 </head>
 <body>
     <h1>할 일 목록</h1>
@@ -13,6 +64,31 @@
         <input type="text" id="description" placeholder="설명" required>
         <button type="submit">추가하기</button>
     </form>
+
+    <div id="edit-modal" class="modal">
+        <div class="modal-content">
+            <h3>할 일 수정</h3>
+            <form id="edit-form">
+                <input type="hidden" id="edit-id">
+                <label>제목
+                    <input type="text" id="edit-title" required>
+                </label>
+                <label>설명
+                    <input type="text" id="edit-description" required>
+                </label>
+                <label>
+                    완료
+                    <input type="checkbox" id="edit-completed">
+                </label>
+                <div class="modal-actions">
+                    <button type="button" id="close-modal">취소</button>
+                    <button type="submit" class="edit-btn">저장</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
     <script>
         async function fetchTodos() {
             const response = await fetch('/todos');
@@ -29,9 +105,11 @@
                 li.appendChild(document.createTextNode(` ${todo.title}: ${todo.description}`));
                 const editButton = document.createElement('button');
                 editButton.textContent = '수정';
-                editButton.onclick = () => editTodo(todo.id);
+                editButton.className = 'edit-btn';
+                editButton.onclick = () => openEditModal(todo);
                 const deleteButton = document.createElement('button');
                 deleteButton.textContent = '삭제';
+                deleteButton.className = 'delete-btn';
                 deleteButton.onclick = () => deleteTodo(todo.id);
                 li.appendChild(editButton);
                 li.appendChild(deleteButton);
@@ -39,21 +117,34 @@
             });
         }
 
-        async function editTodo(id) {
-            const title = prompt('새 제목을 입력하세요:');
-            const description = prompt('새 설명을 입력하세요:');
-            const completed = confirm('이 작업을 완료했습니까?');
+        function openEditModal(todo) {
+            document.getElementById('edit-id').value = todo.id;
+            document.getElementById('edit-title').value = todo.title;
+            document.getElementById('edit-description').value = todo.description;
+            document.getElementById('edit-completed').checked = todo.completed;
+            document.getElementById('edit-modal').style.display = 'block';
+        }
+
+        document.getElementById('close-modal').onclick = function() {
+            document.getElementById('edit-modal').style.display = 'none';
+        };
+
+        document.getElementById('edit-form').onsubmit = async function(event) {
+            event.preventDefault();
+            const id = document.getElementById('edit-id').value;
+            const title = document.getElementById('edit-title').value;
+            const description = document.getElementById('edit-description').value;
+            const completed = document.getElementById('edit-completed').checked;
             const response = await fetch(`/todos/${id}`, {
                 method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id, title, description, completed })
             });
             if (response.ok) {
+                document.getElementById('edit-modal').style.display = 'none';
                 fetchTodos();
             }
-        }
+        };
 
         async function deleteTodo(id) {
             const response = await fetch(`/todos/${id}`, {
@@ -79,6 +170,14 @@
                 fetchTodos();
             }
         });
+
+        // 모달 바깥 클릭 시 닫기
+        window.onclick = function(event) {
+            const modal = document.getElementById('edit-modal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        };
 
         fetchTodos();
     </script>
