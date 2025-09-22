@@ -235,7 +235,7 @@
 
                 const dateDiv = document.createElement('div');
                 dateDiv.className = 'todo-date';
-                dateDiv.textContent = new Date(todo.created_at).toLocaleDateString('ko-KR');
+                dateDiv.textContent = new Date(todo.created_at).toLocaleDateString("ko-KR");
 
                 contentDiv.appendChild(titleDiv);
                 contentDiv.appendChild(descDiv);
@@ -290,7 +290,9 @@
                     id: todo.id,
                     title: todo.title,
                     description: todo.description,
-                    completed: completed
+                    completed: completed,
+                    created_at: todo.created_at,
+                    updated_at: new Date().toISOString()
                 })
             });
             fetchTodos();
@@ -338,12 +340,20 @@
             event.preventDefault();
             const title = document.getElementById('title').value;
             const description = document.getElementById('description').value;
+            const now = new Date().toISOString();
             const response = await fetch('/todos', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ id: Date.now(), title, description, completed: false })
+                body: JSON.stringify({
+                    id: Date.now(),
+                    title,
+                    description,
+                    completed: false,
+                    created_at: now,
+                    updated_at: now
+                })
             });
             if (response.ok) {
                 fetchTodos();
