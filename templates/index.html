@@ -118,6 +118,27 @@
             font-size: 15px;
             box-sizing: border-box;
         }
+        #add-form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        #add-form label {
+            display: flex;
+            flex-direction: column;
+            font-size: 14px;
+            color: #444;
+            margin-bottom: 0;
+        }
+        #add-form input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-top: 4px;
+            border-radius: 5px;
+            border: 1px solid #bbb;
+            font-size: 15px;
+            box-sizing: border-box;
+        }
         .modal-actions {
             margin-top: 10px;
             display: flex;
@@ -224,10 +245,26 @@
     <h1>할 일 목록</h1>
     <ul id="todo-list"></ul>
     <form id="todo-form">
-        <input type="text" id="title" placeholder="제목" required>
-        <input type="text" id="description" placeholder="설명" required>
-        <button type="submit">추가하기</button>
+        <button type="button" id="open-add-modal">추가하기</button>
     </form>
+
+    <div id="add-modal" class="modal">
+        <div class="modal-content">
+            <h3>할 일 추가</h3>
+            <form id="add-form">
+                <label>제목
+                    <input type="text" id="add-title" required>
+                </label>
+                <label>설명
+                    <input type="text" id="add-description" required>
+                </label>
+                <div class="modal-actions">
+                    <button type="button" id="close-add-modal">취소</button>
+                    <button type="submit" class="edit-btn">저장</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <div id="edit-modal" class="modal">
         <div class="modal-content">
@@ -241,7 +278,7 @@
                     <input type="text" id="edit-description" required>
                 </label>
                 <div class="modal-actions">
-                    <button type="button" id="close-modal">취소</button>
+                    <button type="button" id="close-edit-modal">취소</button>
                     <button type="submit" class="edit-btn">저장</button>
                 </div>
             </form>
@@ -341,7 +378,9 @@
             document.getElementById('edit-modal').style.display = 'block';
         }
 
-        document.getElementById('close-modal').onclick = function() {
+
+
+        document.getElementById('close-edit-modal').onclick = function() {
             document.getElementById('edit-modal').style.display = 'none';
         };
 
@@ -400,6 +439,48 @@
             if (event.target === modal) {
                 modal.style.display = 'none';
             }
+        };
+
+        document.getElementById('open-add-modal').onclick = function() {
+            document.getElementById('add-title').value = '';
+            document.getElementById('add-description').value = '';
+            document.getElementById('add-modal').style.display = 'block';
+        };
+        document.getElementById('close-add-modal').onclick = function() {
+            document.getElementById('add-modal').style.display = 'none';
+        };
+        document.getElementById('add-form').onsubmit = async function(event) {
+            event.preventDefault();
+            const title = document.getElementById('add-title').value;
+            const description = document.getElementById('add-description').value;
+            const now = new Date().toISOString();
+            const response = await fetch('/todos', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    id: Date.now(),
+                    title,
+                    description,
+                    completed: false,
+                    created_at: now,
+                    updated_at: now
+                })
+            });
+            if (response.ok) {
+                document.getElementById('add-modal').style.display = 'none';
+                fetchTodos();
+            }
+        };
+        // 모달 바깥 클릭 시 닫기
+        window.addEventListener('click', function(event) {
+            const addModal = document.getElementById('add-modal');
+            if (event.target === addModal) {
+                addModal.style.display = 'none';
+            }
+        });
+
+        document.getElementById('close-add-modal').onclick = function() {
+            document.getElementById('add-modal').style.display = 'none';
         };
 
         fetchTodos();
