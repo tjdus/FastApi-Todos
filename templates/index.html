@@ -1,17 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>To-Do List</title>
+    <title>할 일 목록</title>
 </head>
 <body>
-    <h1>To-Do List</h1>
+    <h1>할 일 목록</h1>
     <ul id="todo-list"></ul>
     <form id="todo-form">
-        <input type="text" id="title" placeholder="Title" required>
-        <input type="text" id="description" placeholder="Description" required>
-        <button type="submit">Add To-Do</button>
+        <input type="text" id="title" placeholder="제목" required>
+        <input type="text" id="description" placeholder="설명" required>
+        <button type="submit">추가하기</button>
     </form>
     <script>
         async function fetchTodos() {
@@ -23,10 +23,10 @@
                 const li = document.createElement('li');
                 li.textContent = `${todo.title}: ${todo.description} (Completed: ${todo.completed})`;
                 const editButton = document.createElement('button');
-                editButton.textContent = 'Edit';
+                editButton.textContent = '수정';
                 editButton.onclick = () => editTodo(todo.id);
                 const deleteButton = document.createElement('button');
-                deleteButton.textContent = 'Delete';
+                deleteButton.textContent = '삭제';
                 deleteButton.onclick = () => deleteTodo(todo.id);
                 li.appendChild(editButton);
                 li.appendChild(deleteButton);
@@ -35,9 +35,9 @@
         }
 
         async function editTodo(id) {
-            const title = prompt('Enter new title:');
-            const description = prompt('Enter new description:');
-            const completed = confirm('Is this task completed?');
+            const title = prompt('새 제목을 입력하세요:');
+            const description = prompt('새 설명을 입력하세요:');
+            const completed = confirm('이 작업을 완료했습니까?');
             const response = await fetch(`/todos/${id}`, {
                 method: 'PUT',
                 headers: {
