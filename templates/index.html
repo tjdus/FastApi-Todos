@@ -99,6 +99,46 @@
             text-align: right;
             width: 100%;
         }
+        /* 체크박스 숨기기 */
+        .custom-checkbox {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 24px;
+            height: 24px;
+            border: 2px solid #4caf50;
+            border-radius: 6px;
+            background: #fff;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 체크박스 선택 시 스타일 */
+        .custom-checkbox:checked {
+            background: #4caf50;
+        }
+
+        /* 체크 아이콘 추가 */
+        .custom-checkbox:checked::after {
+            content: '';
+            display: block;
+            position: absolute;
+            left: 6px;
+            top: 1px;
+            width: 6px;
+            height: 12px;
+            border: solid #fff;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+            transition: all 0.3s ease;
+        }
+
+        /* 호버 효과 */
+        .custom-checkbox:hover {
+            border-color: #388e3c;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+        }
     </style>
 </head>
 <body>
@@ -145,6 +185,7 @@
                 const checkbox = document.createElement('input');
                 checkbox.type = 'checkbox';
                 checkbox.checked = todo.completed;
+                checkbox.className = 'custom-checkbox';
                 checkbox.onclick = async () => {
                     await updateTodoCompleted(todo, checkbox.checked);
                 };
