@@ -248,6 +248,7 @@
 </head>
 <body>
     <h1>할 일 목록</h1>
+    <button type="button" id="toggle-completed-btn" style="margin-bottom:16px;">완료된 할 일 보기</button>
     <ul id="todo-list"></ul>
     <form id="todo-form">
         <button type="button" id="open-add-modal" class="add-fab" aria-label="할 일 추가">
@@ -298,12 +299,22 @@
 
 
     <script>
+        let showCompleted = false;
+
+        document.getElementById('toggle-completed-btn').onclick = function() {
+            showCompleted = !showCompleted;
+            this.textContent = showCompleted ? '완료된 할 일 숨기기' : '완료된 할 일 보기';
+            fetchTodos();
+        };
+
         async function fetchTodos() {
             const response = await fetch('/todos');
             const todos = await response.json();
             const todoList = document.getElementById('todo-list');
             todoList.innerHTML = '';
             todos.forEach(todo => {
+                if (!showCompleted && todo.completed) return;
+
                 const li = document.createElement('li');
 
                 const contentDiv = document.createElement('div');
