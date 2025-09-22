@@ -21,7 +21,12 @@
             todoList.innerHTML = '';
             todos.forEach(todo => {
                 const li = document.createElement('li');
-                li.textContent = `${todo.title}: ${todo.description} (Completed: ${todo.completed})`;
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.checked = todo.completed;
+                checkbox.disabled = true;
+                li.appendChild(checkbox);
+                li.appendChild(document.createTextNode(` ${todo.title}: ${todo.description}`));
                 const editButton = document.createElement('button');
                 editButton.textContent = '수정';
                 editButton.onclick = () => editTodo(todo.id);
