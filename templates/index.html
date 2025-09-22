@@ -5,6 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>할 일 목록</title>
     <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+            background: #f5f5f5;
+        }
+        h1 {
+            text-align: center;
+        }
+        #todo-list {
+            width: 350px;
+            margin: 0 auto 20px auto;
+            padding: 0;
+            list-style: none;
+        }
+        #todo-list li {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #fff;
+            margin-bottom: 8px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
         button {
             margin-left: 8px;
             padding: 4px 12px;
@@ -21,6 +48,19 @@
             background: #f44336;
             color: #fff;
         }
+        #todo-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+        #todo-form input[type="text"] {
+            width: 300px;
+            padding: 6px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
         /* 모달 스타일 */
         .modal {
             display: none;
@@ -34,12 +74,16 @@
             margin: 10% auto;
             padding: 20px;
             border-radius: 8px;
-            width: 300px;
+            width: 320px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
         .modal-content label {
             display: block;
             margin-top: 10px;
+            width: 100%;
         }
         .modal-content input[type="text"] {
             width: 100%;
@@ -53,6 +97,7 @@
         .modal-content .modal-actions {
             margin-top: 16px;
             text-align: right;
+            width: 100%;
         }
     </style>
 </head>
