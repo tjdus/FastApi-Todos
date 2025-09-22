@@ -292,6 +292,8 @@
             <h3>할 일 수정</h3>
             <form id="edit-form">
                 <input type="hidden" id="edit-id">
+                <input type="hidden" id="edit-created-at">
+                <input type="hidden" id="edit-completed">
                 <label>제목
                     <input type="text" id="edit-title" required>
                 </label>
@@ -406,6 +408,8 @@
             document.getElementById('edit-id').value = todo.id;
             document.getElementById('edit-title').value = todo.title;
             document.getElementById('edit-description').value = todo.description;
+            document.getElementById('edit-created-at').value = todo.created_at;
+            document.getElementById('edit-completed').checked = todo.completed;
             document.getElementById('edit-modal').style.display = 'block';
         }
 
@@ -420,10 +424,20 @@
             const id = document.getElementById('edit-id').value;
             const title = document.getElementById('edit-title').value;
             const description = document.getElementById('edit-description').value;
+            const createdAt = document.getElementById('edit-created-at').value;
+            const completed = document.getElementById('edit-completed').checked;
+
             const response = await fetch(`/todos/${id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id, title, description })
+                body: JSON.stringify({
+                        id,
+                        title,
+                        description,
+                        completed,
+                        created_at: createdAt,
+                        updated_at: new Date().toISOString()
+                    })
             });
             if (response.ok) {
                 document.getElementById('edit-modal').style.display = 'none';
