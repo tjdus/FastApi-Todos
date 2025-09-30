@@ -269,13 +269,21 @@
         </button>
     </form>
 
-    <div id="status-filters" style="margin-bottom: 16px;">
-        <button type="button" class="status-filter" data-status="전체">전체</button>
-        <button type="button" class="status-filter" data-status="아직">아직</button>
-        <button type="button" class="status-filter" data-status="진행중">진행중</button>
-        <button type="button" class="status-filter" data-status="완료됨">완료됨</button>
+    <h1>칸반보드</h1>
+    <div id="kanban-board" style="display: flex; gap: 16px; justify-content: center; margin: 32px 0;">
+        <div class="kanban-column" id="col-incomplete" style="background:#f8f8f8; border-radius:8px; padding:12px; width:300px; min-height:200px;">
+            <h2 style="text-align:center; color:#888;">아직</h2>
+            <ul id="list-incomplete" style="list-style:none; padding:0;"></ul>
+        </div>
+        <div class="kanban-column" id="col-inprogress" style="background:#f8f8f8; border-radius:8px; padding:12px; width:300px; min-height:200px;">
+            <h2 style="text-align:center; color:#388e3c;">진행중</h2>
+            <ul id="list-inprogress" style="list-style:none; padding:0;"></ul>
+        </div>
+        <div class="kanban-column" id="col-complete" style="background:#f8f8f8; border-radius:8px; padding:12px; width:300px; min-height:200px;">
+            <h2 style="text-align:center; color:#1976d2;">완료됨</h2>
+            <ul id="list-complete" style="list-style:none; padding:0;"></ul>
+        </div>
     </div>
-
     <div id="add-modal" class="modal">
         <div class="modal-content">
             <h3>할 일 추가</h3>
@@ -335,16 +343,6 @@
             fetchTodos();
         };
 
-        let currentStatusFilter = "전체";
-
-        // 상태별 필터 버튼 이벤트
-        document.querySelectorAll('.status-filter').forEach(btn => {
-            btn.onclick = function() {
-                currentStatusFilter = this.dataset.status;
-                fetchTodos();
-            };
-        });
-
         async function fetchTodos() {
             const response = await fetch('/todos');
             const todos = await response.json();
@@ -352,9 +350,6 @@
             todoList.innerHTML = '';
             todos.forEach(todo => {
                 if (!showCompleted && todo.completed) return;
-
-                if (currentStatusFilter !== "전체" && todo.status !== currentStatusFilter) return;
-
                 const li = document.createElement('li');
 
                 const contentDiv = document.createElement('div');
@@ -417,6 +412,82 @@
                     });
         }
 
+        async function renderKanbanBoard() {
+            const response = await fetch('/todos');
+            const todos = await response.json();
+            // 각 컬럼 초기화
+            document.getElementById('list-incomplete').innerHTML = '';
+            document.getElementById('list-inprogress').innerHTML = '';
+            document.getElementById('list-complete').innerHTML = '';
+            todos.forEach(todo => {
+                let colId = '';
+                if (todo.status === "아직") colId = 'list-incomplete';
+                else if (todo.status === "진행중") colId = 'list-inprogress';
+                else if (todo.status === "완료됨") colId = 'list-complete';
+                else colId = 'list-incomplete';
+                if (!showCompleted && todo.completed) return;
+                const li = document.createElement('li');
+
+                const contentDiv = document.createElement('div');
+                contentDiv.className = 'todo-content';
+
+                const titleDiv = document.createElement('div');
+                titleDiv.className = 'todo-title';
+                titleDiv.textContent = todo.title;
+
+                const descDiv = document.createElement('div');
+                descDiv.className = 'todo-desc';
+                descDiv.textContent = todo.description;
+
+                const dateDiv = document.createElement('div');
+                dateDiv.className = 'todo-date';
+                dateDiv.textContent = new Date(todo.created_at).toLocaleDateString("ko-KR");
+
+                contentDiv.appendChild(titleDiv);
+                contentDiv.appendChild(descDiv);
+
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.checked = todo.completed;
+                checkbox.className = 'custom-checkbox';
+                checkbox.onclick = async () => {
+                    await updateTodoCompleted(todo, checkbox.checked);
+                };
+
+                // const editButton = document.createElement('button');
+                // editButton.className = 'edit-btn';
+                // editButton.setAttribute('aria-label', '수정');
+                // editButton.innerHTML = `
+                //     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4caf50" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                //         <path d="M12 20h9" />
+                //         <path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19.5 3 21l1.5-4L16.5 3.5z" />
+                //     </svg>
+                // `;
+                // editButton.onclick = () => openEditModal(todo);
+                //
+                // const deleteButton = document.createElement('button');
+                // deleteButton.className = 'delete-btn';
+                // deleteButton.setAttribute('aria-label', '삭제');
+                // deleteButton.innerHTML = `
+                //     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f44336" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                //         <polyline points="3 6 5 6 21 6"/>
+                //         <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/>
+                //         <line x1="10" y1="11" x2="10" y2="17"/>
+                //         <line x1="14" y1="11" x2="14" y2="17"/>
+                //     </svg>
+                // `;
+                // deleteButton.onclick = () => deleteTodo(todo.id);
+
+                li.appendChild(checkbox);
+                li.appendChild(contentDiv);
+                li.appendChild(dateDiv);
+                li.appendChild(editButton);
+                li.appendChild(deleteButton);
+
+                document.getElementById(colId).appendChild(li);
+            });
+        }
+
         async function updateTodoCompleted(todo, completed) {
             await fetch(`/todos/${todo.id}`, {
                 method: 'PUT',
@@ -426,6 +497,7 @@
                     title: todo.title,
                     description: todo.description,
                     completed: completed,
+                    status: todo.status || "아직",
                     created_at: todo.created_at,
                     updated_at: new Date().toISOString()
                 })
@@ -562,6 +634,7 @@
         };
 
         fetchTodos();
+        renderKanbanBoard();
     </script>
 </body>
 </html>
