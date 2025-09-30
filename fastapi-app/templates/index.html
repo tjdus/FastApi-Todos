@@ -269,19 +269,19 @@
         </button>
     </form>
 
-    <h1>칸반보드</h1>
+    <h1>칸반 보드</h1>
     <div id="kanban-board" style="display: flex; gap: 16px; justify-content: center; margin: 32px 0;">
         <div class="kanban-column" id="col-incomplete" style="background:#f8f8f8; border-radius:8px; padding:12px; width:300px; min-height:200px;">
             <h2 style="text-align:center; color:#888;">아직</h2>
-            <ul id="list-incomplete" style="list-style:none; padding:0;"></ul>
+            <ul id="list-incomplete"></ul>
         </div>
         <div class="kanban-column" id="col-inprogress" style="background:#f8f8f8; border-radius:8px; padding:12px; width:300px; min-height:200px;">
             <h2 style="text-align:center; color:#388e3c;">진행중</h2>
-            <ul id="list-inprogress" style="list-style:none; padding:0;"></ul>
+            <ul id="list-inprogress"></ul>
         </div>
         <div class="kanban-column" id="col-complete" style="background:#f8f8f8; border-radius:8px; padding:12px; width:300px; min-height:200px;">
             <h2 style="text-align:center; color:#1976d2;">완료됨</h2>
-            <ul id="list-complete" style="list-style:none; padding:0;"></ul>
+            <ul id="list-complete"></ul>
         </div>
     </div>
     <div id="add-modal" class="modal">
@@ -446,13 +446,13 @@
                 contentDiv.appendChild(titleDiv);
                 contentDiv.appendChild(descDiv);
 
-                const checkbox = document.createElement('input');
-                checkbox.type = 'checkbox';
-                checkbox.checked = todo.completed;
-                checkbox.className = 'custom-checkbox';
-                checkbox.onclick = async () => {
-                    await updateTodoCompleted(todo, checkbox.checked);
-                };
+                // const checkbox = document.createElement('input');
+                // checkbox.type = 'checkbox';
+                // checkbox.checked = todo.completed;
+                // checkbox.className = 'custom-checkbox';
+                // checkbox.onclick = async () => {
+                //     await updateTodoCompleted(todo, checkbox.checked);
+                // };
 
                 // const editButton = document.createElement('button');
                 // editButton.className = 'edit-btn';
@@ -478,11 +478,11 @@
                 // `;
                 // deleteButton.onclick = () => deleteTodo(todo.id);
 
-                li.appendChild(checkbox);
+                // li.appendChild(checkbox);
                 li.appendChild(contentDiv);
                 li.appendChild(dateDiv);
-                li.appendChild(editButton);
-                li.appendChild(deleteButton);
+                // li.appendChild(editButton);
+                // li.appendChild(deleteButton);
 
                 document.getElementById(colId).appendChild(li);
             });
