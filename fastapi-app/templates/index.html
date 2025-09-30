@@ -269,6 +269,13 @@
         </button>
     </form>
 
+    <div id="status-filters" style="margin-bottom: 16px;">
+        <button type="button" class="status-filter" data-status="전체">전체</button>
+        <button type="button" class="status-filter" data-status="아직">아직</button>
+        <button type="button" class="status-filter" data-status="진행중">진행중</button>
+        <button type="button" class="status-filter" data-status="완료됨">완료됨</button>
+    </div>
+
     <div id="add-modal" class="modal">
         <div class="modal-content">
             <h3>할 일 추가</h3>
@@ -279,10 +286,13 @@
                 <label>설명
                     <input type="text" id="add-description" required>
                 </label>
-                <div class="modal-actions">
-                    <button type="button" id="close-add-modal">취소</button>
-                    <button type="submit" class="edit-btn">저장</button>
-                </div>
+                <label>상태
+                    <select id="add-status">
+                        <option value="아직">아직</option>
+                        <option value="진행중">진행중</option>
+                        <option value="완료됨">완료됨</option>
+                    </select>
+                </label>
             </form>
         </div>
     </div>
@@ -304,6 +314,13 @@
                     <button type="button" id="close-edit-modal">취소</button>
                     <button type="submit" class="edit-btn">저장</button>
                 </div>
+                <label>상태
+                    <select id="edit-status">
+                        <option value="아직">아직</option>
+                        <option value="진행중">진행중</option>
+                        <option value="완료됨">완료됨</option>
+                    </select>
+                </label>
             </form>
         </div>
     </div>
@@ -318,6 +335,16 @@
             fetchTodos();
         };
 
+        let currentStatusFilter = "전체";
+
+        // 상태별 필터 버튼 이벤트
+        document.querySelectorAll('.status-filter').forEach(btn => {
+            btn.onclick = function() {
+                currentStatusFilter = this.dataset.status;
+                fetchTodos();
+            };
+        });
+
         async function fetchTodos() {
             const response = await fetch('/todos');
             const todos = await response.json();
@@ -325,6 +352,8 @@
             todoList.innerHTML = '';
             todos.forEach(todo => {
                 if (!showCompleted && todo.completed) return;
+
+                if (currentStatusFilter !== "전체" && todo.status !== currentStatusFilter) return;
 
                 const li = document.createElement('li');
 
@@ -410,6 +439,7 @@
             document.getElementById('edit-description').value = todo.description;
             document.getElementById('edit-created-at').value = todo.created_at;
             document.getElementById('edit-completed').checked = todo.completed;
+            document.getElementById('edit-status').value = todo.status || "아직";
             document.getElementById('edit-modal').style.display = 'block';
         }
 
@@ -426,7 +456,7 @@
             const description = document.getElementById('edit-description').value;
             const createdAt = document.getElementById('edit-created-at').value;
             const completed = document.getElementById('edit-completed').checked;
-
+            const status = document.getElementById('edit-status').value;
             const response = await fetch(`/todos/${id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
@@ -435,6 +465,7 @@
                         title,
                         description,
                         completed,
+                        status,
                         created_at: createdAt,
                         updated_at: new Date().toISOString()
                     })
@@ -498,6 +529,7 @@
             event.preventDefault();
             const title = document.getElementById('add-title').value;
             const description = document.getElementById('add-description').value;
+            const status = document.getElementById('add-status').value;
             const now = new Date().toISOString();
             const response = await fetch('/todos', {
                 method: 'POST',
@@ -507,6 +539,7 @@
                     title,
                     description,
                     completed: false,
+                    status,
                     created_at: now,
                     updated_at: now
                 })

@@ -11,6 +11,7 @@ class TodoItem(BaseModel):
     id: int
     title: str
     description: str
+    status: str
     completed: bool
     created_at: str
     updated_at: str
