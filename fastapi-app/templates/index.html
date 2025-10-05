@@ -257,7 +257,7 @@
 </head>
 <body>
     <h1>할 일 목록</h1>
-    <button type="button" id="toggle-completed-btn" style="margin-bottom:16px;">완료된 할 일 보기</button>
+    <button type="button" id="toggle-completed-btn" style="margin-bottom:16px">완료된 할 일 보기</button>
     <ul id="todo-list"></ul>
     <form id="todo-form">
         <button type="button" id="open-add-modal" class="add-fab" aria-label="할 일 추가">
@@ -409,7 +409,8 @@
                 li.appendChild(editButton);
                 li.appendChild(deleteButton);
                 todoList.appendChild(li);
-                    });
+                }
+            );
         }
 
         async function renderKanbanBoard() {
@@ -488,6 +489,9 @@
             });
         }
 
+        fetchTodos();
+        renderKanbanBoard();
+
         async function updateTodoCompleted(todo, completed) {
             await fetch(`/todos/${todo.id}`, {
                 method: 'PUT',
@@ -502,7 +506,7 @@
                     updated_at: new Date().toISOString()
                 })
             });
-            fetchTodos();
+            await fetchTodos();
         }
 
         function openEditModal(todo) {
@@ -632,9 +636,6 @@
         document.getElementById('close-add-modal').onclick = function() {
             document.getElementById('add-modal').style.display = 'none';
         };
-
-        fetchTodos();
-        renderKanbanBoard();
     </script>
 </body>
 </html>
