@@ -253,6 +253,24 @@
             height: 56px;
             background: transparent;
         }
+
+        select {
+            width: 100%;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #bbb;
+            font-size: 15px;
+            background: #fff;
+            color: #333;
+            box-sizing: border-box;
+            margin-top: 4px;
+            transition: border-color 0.2s;
+        }
+        select:focus {
+            border-color: #4caf50;
+            outline: none;
+            background: #f1fff1;
+        }
     </style>
 </head>
 <body>
@@ -301,6 +319,10 @@
                         <option value="완료됨">완료됨</option>
                     </select>
                 </label>
+                <div class="modal-actions">
+                    <button type="button" id="close-add-modal">취소</button>
+                    <button type="submit" class="edit-btn">추가</button>
+                </div>
             </form>
         </div>
     </div>
@@ -318,10 +340,6 @@
                 <label>설명
                     <input type="text" id="edit-description" required>
                 </label>
-                <div class="modal-actions">
-                    <button type="button" id="close-edit-modal">취소</button>
-                    <button type="submit" class="edit-btn">저장</button>
-                </div>
                 <label>상태
                     <select id="edit-status">
                         <option value="아직">아직</option>
@@ -329,6 +347,10 @@
                         <option value="완료됨">완료됨</option>
                     </select>
                 </label>
+                <div class="modal-actions">
+                    <button type="button" id="close-edit-modal">취소</button>
+                    <button type="submit" class="edit-btn">저장</button>
+                </div>
             </form>
         </div>
     </div>
@@ -507,6 +529,7 @@
                 })
             });
             await fetchTodos();
+            await renderKanbanBoard();
         }
 
         function openEditModal(todo) {
@@ -586,21 +609,30 @@
         });
 
         // 모달 바깥 클릭 시 닫기
-        window.onclick = function(event) {
-            const modal = document.getElementById('edit-modal');
-            if (event.target === modal) {
-                modal.style.display = 'none';
+        window.addEventListener('click', function(event) {
+            const addModal = document.getElementById('add-modal');
+            if (event.target === addModal) {
+                addModal.style.display = 'none';
             }
-        };
+            const editModal = document.getElementById('edit-modal');
+            if (event.target === editModal) {
+                editModal.style.display = 'none';
+            }
+        });
 
+        // 닫기 버튼 이벤트
+        document.getElementById('close-add-modal').onclick = function() {
+            document.getElementById('add-modal').style.display = 'none';
+        };
+        document.getElementById('close-edit-modal').onclick = function() {
+            document.getElementById('edit-modal').style.display = 'none';
+        };
         document.getElementById('open-add-modal').onclick = function() {
             document.getElementById('add-title').value = '';
             document.getElementById('add-description').value = '';
             document.getElementById('add-modal').style.display = 'block';
         };
-        document.getElementById('close-add-modal').onclick = function() {
-            document.getElementById('add-modal').style.display = 'none';
-        };
+
         document.getElementById('add-form').onsubmit = async function(event) {
             event.preventDefault();
             const title = document.getElementById('add-title').value;
@@ -622,20 +654,11 @@
             });
             if (response.ok) {
                 document.getElementById('add-modal').style.display = 'none';
-                fetchTodos();
+                await fetchTodos();
+                await renderKanbanBoard();
             }
         };
-        // 모달 바깥 클릭 시 닫기
-        window.addEventListener('click', function(event) {
-            const addModal = document.getElementById('add-modal');
-            if (event.target === addModal) {
-                addModal.style.display = 'none';
-            }
-        });
 
-        document.getElementById('close-add-modal').onclick = function() {
-            document.getElementById('add-modal').style.display = 'none';
-        };
     </script>
 </body>
 </html>
