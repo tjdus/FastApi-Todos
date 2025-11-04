@@ -329,6 +329,11 @@
                         <option value="완료됨">완료됨</option>
                     </select>
                 </label>
+                <label>태그
+                    <select id="add-tag-ids" multiple>
+                        <!-- JS에서 옵션 동적으로 추가 -->
+                    </select>
+                </label>
                 <div class="modal-actions">
                     <button type="button" id="close-add-modal">취소</button>
                     <button type="submit" class="edit-btn">추가</button>
@@ -372,7 +377,10 @@
             <input type="text" id="tag-name" placeholder="새 태그 이름" required style="flex:1; padding:6px; border-radius:4px; border:1px solid #ccc;">
             <button type="submit" style="background:#4caf50; color:#fff;">태그 추가</button>
         </form>
+        <ul id="tag-todo-list" style="margin-top:16px;"></ul>
     </div>
+
+
 
 
     <script>
@@ -649,11 +657,26 @@
             });
         }
 
+        // 태그 옵션 렌더링
+        async function renderTagOptions() {
+            const res = await fetch('/tags');
+            const tags = await res.json();
+            const select = document.getElementById('add-tag-ids');
+            select.innerHTML = '';
+            tags.forEach(tag => {
+                const option = document.createElement('option');
+                option.value = tag.id;
+                option.textContent = tag.name;
+                select.appendChild(option);
+            });
+        }
+
         // 태그별 할 일 조회
         async function fetchTodosByTag(tagId) {
-            const res = await fetch(`/todos?tag_id=${tagId}`);
+            const res = await fetch(`/todos/tags/${tagId}`);
             const todos = await res.json();
-            const todoList = document.getElementById('todo-list');
+            console.log(todos);
+            const todoList = document.getElementById('tag-todo-list');
             todoList.innerHTML = '';
             todos.forEach(todo => {
                 // 기존 fetchTodos와 동일하게 렌더링
@@ -750,6 +773,7 @@
             document.getElementById('add-title').value = '';
             document.getElementById('add-description').value = '';
             document.getElementById('add-modal').style.display = 'block';
+            renderTagOptions();
         };
 
         document.getElementById('add-form').onsubmit = async function(event) {
@@ -758,6 +782,9 @@
             const description = document.getElementById('add-description').value;
             const status = document.getElementById('add-status').value;
             const now = new Date().toISOString();
+            const tagSelect = document.getElementById('add-tag-ids');
+            const tag_ids = Array.from(tagSelect.selectedOptions).map(opt => Number(opt.value));
+
             const response = await fetch('/todos', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -768,7 +795,8 @@
                     completed: false,
                     status,
                     created_at: now,
-                    updated_at: now
+                    updated_at: now,
+                    tag_ids
                 })
             });
             if (response.ok) {

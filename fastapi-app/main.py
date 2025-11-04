@@ -22,11 +22,6 @@ class Tag(BaseModel):
     id: int
     name: str
 
-class TodoTag(BaseModel):
-    id: int
-    todo_id: int
-    tag_id: int
-
 class TodoItemCreate(BaseModel):
     id: int
     title: str
@@ -77,7 +72,7 @@ def get_todos():
     result.sort(key=lambda x: x.created_at, reverse=True)
     return result
 
-@app.get("/todos/{tag_id}", response_model=list[TodoItemResponse])
+@app.get("/todos/tags/{tag_id}", response_model=list[TodoItemResponse])
 def get_todos_by_tag(tag_id: int):
     todos = load_todos()
     tags = load_tags()
