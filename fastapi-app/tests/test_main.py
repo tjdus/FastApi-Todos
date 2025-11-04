@@ -20,7 +20,11 @@ def make_todo(
     updated_at=None,
     tag_ids=None
 ):
+<<<<<<< HEAD
     now = datetime.now(timezone.utc).isoformat()
+=======
+    now = datetime.now(timezone.utc)
+>>>>>>> 9ed0e8016866f28863d251714f8aabf6e13fb0c9
     return TodoItemCreate(
         id=id,
         title=title,
