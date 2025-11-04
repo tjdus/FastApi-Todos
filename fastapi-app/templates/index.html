@@ -271,6 +271,17 @@
             outline: none;
             background: #f1fff1;
         }
+        .tag-badge {
+            display: inline-block;
+            background: #e0f2f1;
+            color: #00796b;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 8px;
+            padding: 2px 8px;
+            margin-right: 4px;
+            margin-top: 4px;
+        }
     </style>
 </head>
 <body>
@@ -423,6 +434,17 @@
                     </svg>
                 `;
                 deleteButton.onclick = () => deleteTodo(todo.id);
+
+                if (todo.tags && todo.tags.length > 0) {
+                    const tagDiv = document.createElement('div');
+                    todo.tags.forEach(tag => {
+                        const badge = document.createElement('span');
+                        badge.className = 'tag-badge';
+                        badge.textContent = tag.name;
+                        tagDiv.appendChild(badge);
+                    });
+                    contentDiv.appendChild(tagDiv);
+                }
 
                 li.appendChild(checkbox);
                 li.appendChild(contentDiv);
