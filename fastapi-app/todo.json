@@ -3,10 +3,10 @@
         "id": 1757665411359,
         "title": "20221593",
         "description": "\uc774\uc11c\uc5f0",
-        "completed": false,
+        "completed": true,
         "status": "\uc544\uc9c1",
         "created_at": "2024-06-07T12:34:56.000Z",
-        "updated_at": "2025-09-22T14:38:34.115Z"
+        "updated_at": "2025-11-04T05:59:51.642Z"
     },
     {
         "id": 1758550203031,
@@ -40,8 +40,8 @@
         "title": "asdfff",
         "description": "fdf",
         "status": "\uc544\uc9c1",
-        "completed": false,
+        "completed": true,
         "created_at": "2025-10-05T10:44:50.746Z",
-        "updated_at": "2025-10-05T10:44:50.746Z"
+        "updated_at": "2025-11-04T05:59:47.607Z"
     }
 ]
