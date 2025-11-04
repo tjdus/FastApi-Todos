@@ -165,6 +165,6 @@ def update_tag(tag_id: int, updated_tag: Tag):
 def delete_tag(tag_id: int):
     tags = load_tags()
     tag = [tag for tag in tags if tag["id"] != tag_id]
-    save_todos(tag)
+    save_tags(tag)
     return {"message": "Tag deleted"}
 
