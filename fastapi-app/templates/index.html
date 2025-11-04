@@ -328,11 +328,10 @@
                         <option value="완료됨">완료됨</option>
                     </select>
                 </label>
-                <label>태그
-                    <select id="add-tag-ids" multiple>
-                        <!-- JS에서 옵션 동적으로 추가 -->
-                    </select>
-                </label>
+                <label for="add-tag-ids">태그</label>
+                <div id="add-tag-ids">
+                    <!-- JS에서 옵션 동적으로 추가 -->
+                </div>
                 <div class="modal-actions">
                     <button type="button" id="close-add-modal">취소</button>
                     <button type="submit" class="edit-btn">추가</button>
@@ -669,14 +668,31 @@
         async function renderTagOptions() {
             const res = await fetch('/tags');
             const tags = await res.json();
-            const select = document.getElementById('add-tag-ids');
-            select.innerHTML = '';
+            const container = document.getElementById('add-tag-ids');
+            container.innerHTML = '';
+            container.style.alignItems = "center";
             tags.forEach(tag => {
-                const option = document.createElement('option');
-                option.value = tag.id;
-                option.textContent = tag.name;
-                select.appendChild(option);
-            });
+                const label = document.createElement('label');
+                label.style.display = 'inline-flex';
+                label.style.flexDirection = 'row';
+                label.style.alignItems = 'center';
+                label.style.marginRight = '8px';
+
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.value = tag.id;
+                checkbox.name = 'tag_ids';
+
+                const span = document.createElement('span');
+                span.textContent = tag.name;
+                span.className = 'tag-badge';
+                span.style.backgroundColor = getRandomColorById(tag.id);
+                span.style.marginLeft = '6px';
+
+                label.appendChild(checkbox);
+                label.appendChild(span);
+                container.appendChild(label);
+             });
         }
 
         // 태그별 할 일 조회
@@ -791,7 +807,7 @@
             const status = document.getElementById('add-status').value;
             const now = new Date().toISOString();
             const tagSelect = document.getElementById('add-tag-ids');
-            const tag_ids = Array.from(tagSelect.selectedOptions).map(opt => Number(opt.value));
+            const tag_ids = Array.from(document.querySelectorAll('#add-tag-ids input[type="checkbox"]:checked')).map(cb => Number(cb.value));
 
             const response = await fetch('/todos', {
                 method: 'POST',
