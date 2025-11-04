@@ -273,12 +273,11 @@
         }
         .tag-badge {
             display: inline-block;
-            background: #e0f2f1;
-            color: #00796b;
+            color: #222;
             font-size: 12px;
             font-weight: 600;
             border-radius: 8px;
-            padding: 2px 8px;
+            padding: 4px 8px;
             margin-right: 4px;
             margin-top: 4px;
         }
@@ -392,6 +391,14 @@
             fetchTodos();
         };
 
+        function getRandomColorById(id) {
+            const colors = [
+                "#e0f2f1", "#ffe0b2", "#e1bee7", "#bbdefb", "#c8e6c9",
+                "#f8bbd0", "#d1c4e9", "#b2dfdb", "#fff9c4", "#f0f4c3"
+            ];
+            return colors[id % colors.length];
+        }
+
         async function fetchTodos() {
             const response = await fetch('/todos');
             const todos = await response.json();
@@ -458,6 +465,7 @@
                         const badge = document.createElement('span');
                         badge.className = 'tag-badge';
                         badge.textContent = tag.name;
+                        badge.style.backgroundColor = getRandomColorById(tag.id); // 랜덤 배경색
                         tagDiv.appendChild(badge);
                     });
                     contentDiv.appendChild(tagDiv);
@@ -632,27 +640,27 @@
                 const badge = document.createElement('span');
                 badge.className = 'tag-badge';
                 badge.textContent = tag.name;
+                badge.style.backgroundColor = getRandomColorById(tag.id);
                 badge.style.cursor = 'pointer';
                 badge.onclick = () => fetchTodosByTag(tag.id);
 
                 const delBtn = document.createElement('button');
-                delBtn.textContent = '삭제';
-                delBtn.style.marginLeft = '6px';
-                delBtn.style.background = '#f44336';
-                delBtn.style.color = '#fff';
+                delBtn.textContent = 'x';
+                delBtn.style.marginLeft = '2px';
+                delBtn.style.color = '#222';
                 delBtn.style.border = 'none';
-                delBtn.style.borderRadius = '4px';
+                delBtn.style.background = 'none';
                 delBtn.style.fontSize = '11px';
+                delBtn.style.width='8px';
                 delBtn.onclick = async (e) => {
                     e.stopPropagation();
                     await fetch(`/tags/${tag.id}`, { method: 'DELETE' });
                     fetchTags();
                 };
-
+                badge.appendChild(delBtn);
                 const tagDiv = document.createElement('span');
-                tagDiv.style.marginRight = '8px';
+                tagDiv.style.marginRight = '2px';
                 tagDiv.appendChild(badge);
-                tagDiv.appendChild(delBtn);
                 tagList.appendChild(tagDiv);
             });
         }
