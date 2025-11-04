@@ -77,6 +77,19 @@ def get_todos():
     result.sort(key=lambda x: x.created_at, reverse=True)
     return result
 
+@app.get("/todos/{tag_id}", response_model=list[TodoItemResponse])
+def get_todos_by_tag(tag_id: int):
+    todos = load_todos()
+    tags = load_tags()
+    result = []
+    for todo in todos:
+        tag_ids = todo.get("tag_ids", [])
+        if tag_id in tag_ids:
+            todo_tags = [tag for tag in tags if tag["id"] in tag_ids]
+            result.append(TodoItemResponse(**todo, tags=todo_tags))
+    result.sort(key=lambda x: x.created_at, reverse=True)
+    return result
+
 # 신규 To-Do 항목 추가
 @app.post("/todos", response_model=TodoItemResponse)
 def create_todo(todo: TodoItemCreate):
