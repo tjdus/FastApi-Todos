@@ -365,6 +365,15 @@
         </div>
     </div>
 
+    <div id="tag-section" style="width:350px; margin:32px auto 0 auto; background:#fff; border-radius:8px; box-shadow:0 1px 3px rgba(0,0,0,0.05); padding:16px;">
+        <h3 style="margin-bottom:12px; color:#00796b;">태그별 할 일 조회</h3>
+        <div id="tag-list" style="margin-bottom:12px;"></div>
+        <form id="tag-form" style="display:flex; gap:8px; margin-bottom:8px;">
+            <input type="text" id="tag-name" placeholder="새 태그 이름" required style="flex:1; padding:6px; border-radius:4px; border:1px solid #ccc;">
+            <button type="submit" style="background:#4caf50; color:#fff;">태그 추가</button>
+        </form>
+    </div>
+
 
     <script>
         let showCompleted = false;
@@ -534,6 +543,7 @@
 
         fetchTodos();
         renderKanbanBoard();
+        fetchTags();
 
         async function updateTodoCompleted(todo, completed) {
             await fetch(`/todos/${todo.id}`, {
@@ -604,6 +614,94 @@
                 fetchTodos();
             }
         }
+
+        async function fetchTags() {
+            const res = await fetch('/tags');
+            const tags = await res.json();
+            const tagList = document.getElementById('tag-list');
+            tagList.innerHTML = '';
+            tags.forEach(tag => {
+                const badge = document.createElement('span');
+                badge.className = 'tag-badge';
+                badge.textContent = tag.name;
+                badge.style.cursor = 'pointer';
+                badge.onclick = () => fetchTodosByTag(tag.id);
+
+                const delBtn = document.createElement('button');
+                delBtn.textContent = '삭제';
+                delBtn.style.marginLeft = '6px';
+                delBtn.style.background = '#f44336';
+                delBtn.style.color = '#fff';
+                delBtn.style.border = 'none';
+                delBtn.style.borderRadius = '4px';
+                delBtn.style.fontSize = '11px';
+                delBtn.onclick = async (e) => {
+                    e.stopPropagation();
+                    await fetch(`/tags/${tag.id}`, { method: 'DELETE' });
+                    fetchTags();
+                };
+
+                const tagDiv = document.createElement('span');
+                tagDiv.style.marginRight = '8px';
+                tagDiv.appendChild(badge);
+                tagDiv.appendChild(delBtn);
+                tagList.appendChild(tagDiv);
+            });
+        }
+
+        // 태그별 할 일 조회
+        async function fetchTodosByTag(tagId) {
+            const res = await fetch(`/todos?tag_id=${tagId}`);
+            const todos = await res.json();
+            const todoList = document.getElementById('todo-list');
+            todoList.innerHTML = '';
+            todos.forEach(todo => {
+                // 기존 fetchTodos와 동일하게 렌더링
+                const li = document.createElement('li');
+                const contentDiv = document.createElement('div');
+                contentDiv.className = 'todo-content';
+                const titleDiv = document.createElement('div');
+                titleDiv.className = 'todo-title';
+                titleDiv.textContent = todo.title;
+                const descDiv = document.createElement('div');
+                descDiv.className = 'todo-desc';
+                descDiv.textContent = todo.description;
+                const dateDiv = document.createElement('div');
+                dateDiv.className = 'todo-date';
+                dateDiv.textContent = new Date(todo.created_at).toLocaleDateString("ko-KR");
+                contentDiv.appendChild(titleDiv);
+                contentDiv.appendChild(descDiv);
+                if (todo.tags && todo.tags.length > 0) {
+                    const tagDiv = document.createElement('div');
+                    todo.tags.forEach(tag => {
+                        const badge = document.createElement('span');
+                        badge.className = 'tag-badge';
+                        badge.textContent = tag.name;
+                        tagDiv.appendChild(badge);
+                    });
+                    contentDiv.appendChild(tagDiv);
+                }
+                li.appendChild(contentDiv);
+                li.appendChild(dateDiv);
+                todoList.appendChild(li);
+            });
+        }
+
+        // 태그 생성
+        document.getElementById('tag-form').onsubmit = async function(event) {
+            event.preventDefault();
+            const name = document.getElementById('tag-name').value;
+            await fetch('/tags', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    id: Date.now(),
+                    name
+                })
+            });
+            document.getElementById('tag-name').value = '';
+            fetchTags();
+        };
 
         document.getElementById('todo-form').addEventListener('submit', async (event) => {
             event.preventDefault();

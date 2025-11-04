@@ -4,6 +4,8 @@ from pydantic import BaseModel
 import json
 import os
 
+from pydantic.v1 import Field
+
 app = FastAPI()
 
 # To-Do 항목 모델
@@ -33,7 +35,7 @@ class TodoItemCreate(BaseModel):
     completed: bool
     created_at: str
     updated_at: str
-    tag_ids: list[int] = []
+    tag_ids: list[int] = Field(default_factory=list)
 
 class TodoItemResponse(BaseModel):
     id: int
@@ -43,7 +45,7 @@ class TodoItemResponse(BaseModel):
     completed: bool
     created_at: str
     updated_at: str
-    tags: list[Tag] = []
+    tags: list[Tag] = Field(default_factory=list)
 
 # JSON 파일 경로
 TODO_FILE = "todo.json"
@@ -79,7 +81,7 @@ def get_todos():
 @app.post("/todos", response_model=TodoItemResponse)
 def create_todo(todo: TodoItemCreate):
     todos = load_todos()
-    todo_dict = todo.dict()
+    todo_dict = todo.model_dump()
     todos.append(todo_dict)
     save_todos(todos)
     tags = load_tags()
@@ -135,9 +137,9 @@ def get_tags():
 @app.post("/tags", response_model=Tag)
 def create_tag(tag: Tag):
     tags = load_tags()
-    tags.append(tags.dict())
-    save_todos(tags)
-    return tags
+    tags.append(tag.model_dump())
+    save_tags(tags)
+    return tag
 
 # To-Do 항목 수정
 @app.put("/tags/{tag_id}", response_model=Tag)
@@ -146,7 +148,7 @@ def update_tag(tag_id: int, updated_tag: Tag):
     for tag in tags:
         if tag["id"] == tag_id:
             tag.update(updated_tag.dict())
-            save_todos(tag)
+            save_tags(tag)
             return tag
     raise HTTPException(status_code=404, detail="Tag not found")
 
