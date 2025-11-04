@@ -4,6 +4,12 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+fastapi = "*"
+pytest = "*"
+pytest-html = "*"
+httpx = "*"
+pytest-cov = "*"
+uvicorn = {extras = ["standard"], version = "*"}
 
 [dev-packages]
 

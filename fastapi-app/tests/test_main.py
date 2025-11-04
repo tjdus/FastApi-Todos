@@ -6,7 +6,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 
 import pytest
 from fastapi.testclient import TestClient
-from main import app, save_todos, load_todos, TodoItem
+from main import app, save_todos, load_todos, TodoItem, TodoItemCreate
 
 client = TestClient(app)
 
@@ -17,17 +17,19 @@ def make_todo(
     status="아직",
     completed=False,
     created_at=None,
-    updated_at=None
+    updated_at=None,
+    tag_ids=None
 ):
     now = datetime.utcnow().isoformat()
-    return TodoItem(
+    return TodoItemCreate(
         id=id,
         title=title,
         description=description,
         status=status,
         completed=completed,
         created_at=created_at or now,
-        updated_at=updated_at or now
+        updated_at=updated_at or now,
+        tag_ids=tag_ids or []
     )
 
 @pytest.fixture(autouse=True)
