@@ -82,16 +82,16 @@ pipeline {
             steps {
                 dir('jmeter') {
                     script {
-                        docker.image("${JMETER_IMAGE_NAME}:latest").inside('--network host --user root:root -v $WORKSPACE/jmeter:/jmeter') {
+                        docker.image("${JMETER_IMAGE_NAME}:latest").inside('--network host --user root:root') {
                             sh '''
-                                rm -rf /jmeter/report /jmeter/jmeter.log /jmeter/results.jtl
-                                mkdir -p /jmeter/report
+                                rm -rf report jmeter.log results.jtl
+                                mkdir -p report
                                 jmeter -n \
-                                       -t /jmeter/fastapi_test_plan.jmx \
+                                       -t fastapi_test_plan.jmx \
                                        -JBASE_URL=http://localhost:5001 \
-                                       -l /jmeter/results.jtl \
+                                       -l results.jtl \
                                        -Jjmeter.save.saveservice.output_format=csv \
-                                       -e -o /jmeter/report
+                                       -e -o report
                             '''
                         }
                     }
@@ -140,7 +140,7 @@ pipeline {
 
                        # Docker 이미지 다운로드
                         docker pull whatdagodda/fastapi-app:latest
-                        docker run -d --name FastApi-app -p 8000:8000 whatdagodda/fastapi-app:latest
+                        docker run -d --name FastApi-app -p 8000:5001 whatdagodda/fastapi-app:latest
                         exit
 
                         EOF
