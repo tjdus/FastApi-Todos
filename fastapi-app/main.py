@@ -3,7 +3,6 @@ from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 import json
 import os
-import os
 from prometheus_fastapi_instrumentator import Instrumentator
 
 from pydantic.v1 import Field
