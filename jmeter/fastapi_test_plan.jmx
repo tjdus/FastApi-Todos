@@ -149,6 +149,36 @@
           </HeaderManager>
         </hashTree>
 
+        <!-- InfluxDB Backend Listener -->
+        <BackendListener guiclass="BackendListenerGui" testclass="BackendListener" testname="InfluxDB Backend Listener" enabled="true">
+          <stringProp name="classname">org.apache.jmeter.visualizers.backend.influxdb.InfluxdbBackendListenerClient</stringProp>
+          <elementProp name="arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="influxdbUrl" elementType="Argument">
+                <stringProp name="Argument.name">influxdbUrl</stringProp>
+                <stringProp name="Argument.value">http://influxdb:8086/api/v2/write?org=myorg&amp;bucket=mybucket&amp;precision=ms</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="application" elementType="Argument">
+                <stringProp name="Argument.name">application</stringProp>
+                <stringProp name="Argument.value">fastapi-test</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="measurement" elementType="Argument">
+                <stringProp name="Argument.name">measurement</stringProp>
+                <stringProp name="Argument.value">jmeter</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="influxdbToken" elementType="Argument">
+                <stringProp name="Argument.name">influxdbToken</stringProp>
+                <stringProp name="Argument.value">mytoken</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+        </BackendListener>
+        <hashTree/>
+
       </hashTree>
     </hashTree>
   </hashTree>
