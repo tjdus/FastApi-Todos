@@ -19,7 +19,7 @@ app = FastAPI()
 Instrumentator().instrument(app).expose(app, endpoint="/metrics")
 
 client = InfluxDBClient(url=influx_url, token=influx_token, org=influx_org)
-write_api = client.write_api(write_options=None)
+write_api = client.write_api()
 
 def write_metric():
     point = Point("fastapi_metric").field("value", 1)
@@ -184,4 +184,3 @@ def delete_tag(tag_id: int):
     tag = [tag for tag in tags if tag["id"] != tag_id]
     save_tags(tag)
     return {"message": "Tag deleted"}
-
