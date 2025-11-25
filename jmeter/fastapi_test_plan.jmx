@@ -110,7 +110,8 @@
           <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
           <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
           <stringProp name="HTTPSampler.monitor">false</stringProp>
-          <stringProp name="HTTPSampler.contentEncoding">application/json</stringProp>
+          <!-- ✅ contentEncoding 수정 -->
+          <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
         </HTTPSamplerProxy>
         <hashTree/>
         <!-- GET /tags -->
@@ -163,11 +164,11 @@
           <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
           <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
           <stringProp name="HTTPSampler.monitor">false</stringProp>
-          <stringProp name="HTTPSampler.contentEncoding">application/json</stringProp>
+          <!-- ✅ contentEncoding 수정 -->
+          <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
         </HTTPSamplerProxy>
         <hashTree/>
       </hashTree>
     </hashTree>
   </hashTree>
 </jmeterTestPlan>
-```
