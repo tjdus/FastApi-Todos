@@ -5,8 +5,8 @@ pipeline {
         DOCKERHUB_CREDENTIALS = 'dockerhub-credentials'   // DockerHub 자격증명 ID
         IMAGE_NAME            = 'whatdagodda/fastapi-app' // 빌드·푸시할 이미지 이름
         REMOTE_USER           = 'ubuntu'                 // 배포 대상 서버 유저
-        REMOTE_HOST           = '13.124.32.119'              // 배포 대상 서버 호스트
-        REMOTE_PATH           = '/home/ubuntu'           // 배포용 디렉토리
+        REMOTE_HOST           = '13.124.109.82'              // 배포 대상 서버 호스트
+        REMOTE_PATH           = '/home/ubuntu/tjdus'           // 배포용 디렉토리
         COMPOSE_FILE          = 'docker-compose.yml'
         SONAR_TOKEN           = credentials('sonar-token')
         SONAR_HOST_URL        = 'http://localhost:9000'

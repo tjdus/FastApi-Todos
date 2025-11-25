@@ -6,10 +6,24 @@ import os
 from prometheus_fastapi_instrumentator import Instrumentator
 
 from pydantic.v1 import Field
+from influxdb_client import InfluxDBClient, Point, WritePrecision
+
+influx_url = "http://influxdb:8086"
+influx_token = "mytoken"
+influx_org = "myorg"
+influx_bucket = "mybucket"
+
 
 app = FastAPI()
 
 Instrumentator().instrument(app).expose(app, endpoint="/metrics")
+
+client = InfluxDBClient(url=influx_url, token=influx_token, org=influx_org)
+write_api = client.write_api(write_options=None)
+
+def write_metric():
+    point = Point("fastapi_metric").field("value", 1)
+    write_api.write(bucket=influx_bucket, org=influx_org, record=point)
 
 # To-Do 항목 모델
 class TodoItem(BaseModel):

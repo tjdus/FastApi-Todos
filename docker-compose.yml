@@ -43,6 +43,8 @@ services:
     container_name: grafana
     ports:
       - "3000:3000"
+    depends_on:
+      - influxdb
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=admin  # 기본 Grafana 로그인 비밀번호
     volumes:
@@ -96,6 +98,18 @@ services:
       - /jmeter/report
     networks:
       - loadtest-net
+
+  influxdb:
+    image: influxdb:2.7
+    ports:
+      - "8086:8086"
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=admin
+      - DOCKER_INFLUXDB_INIT_PASSWORD=admin123
+      - DOCKER_INFLUXDB_INIT_ORG=myorg
+      - DOCKER_INFLUXDB_INIT_BUCKET=mybucket
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=mytoken
 
 networks:
   loadtest-net:
