@@ -110,47 +110,7 @@ pipeline {
                 }
             }
         }
-
-        stage('Build') {
-            steps {
-                dir('fastapi-app') {
-                    script {
-                        docker.build("${IMAGE_NAME}:latest", ".")
-                    }
-                }
-            }
-        }
-
-        stage('Push') {
-            steps {
-                script {
-                    docker.withRegistry('https://index.docker.io/v1/', DOCKERHUB_CREDENTIALS) {
-                        docker.image("${IMAGE_NAME}:latest").push()
-                    }
-                }
-            }
-        }
-
-        stage('Deploy') {
-            steps {
-                script {
-                    sshagent(credentials: ['admin']) {
-                    sh """
-                    ssh -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} << EOF
-
-                       # Docker 이미지 다운로드
-                        docker pull whatdagodda/fastapi-app:latest
-                        docker run -d --name FastApi-app -p 8000:5001 whatdagodda/fastapi-app:latest
-                        exit
-
-                        EOF
-                    """
-                    }
-                }
-            }
-        }
     }
-
     post {
         always {
             echo 'Pipeline completed.'
