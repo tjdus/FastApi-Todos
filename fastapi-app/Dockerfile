@@ -10,7 +10,4 @@ COPY .. .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # FastAPI 서버 실행
-CMD ["uvicorn", "main:app",
-     "--host", "0.0.0.0",
-     "--port", "8000",
-     "--log-config", "logging.ini"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--log-config", "logging.ini"]
